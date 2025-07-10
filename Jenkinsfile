@@ -25,6 +25,12 @@ pipeline {
       }
     }
 
+    stage('Publish Test Reports') {
+      steps {
+        junit 'target/surefire-reports/*.xml'
+      }
+    }
+
     stage('Archive Artifacts') {
       steps {
         archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
