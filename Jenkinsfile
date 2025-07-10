@@ -43,7 +43,7 @@ pipeline {
       steps {
         nexusArtifactUploader artifacts: [[artifactId: 'maven-jar-sample', classifier: '', file: 'target/maven-jar-sample-1.0-SNAPSHOT.jar', type: '.jar']], credentialsId: 'nexus', groupId: 'com.yhayashi30.sample', nexusUrl: 'localhost:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'my-maven-hosted', version: '1.0-SNAPSHOT'
       }
-    }    
+    }
 
 
   post {
