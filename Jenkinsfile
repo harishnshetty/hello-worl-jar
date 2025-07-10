@@ -4,9 +4,7 @@ pipeline {
   environment {
     GIT_REPO = 'https://github.com/harishnshetty/hello-worl-jar.git'
     GIT_BRANCH = 'main'
-    MAVEN_REPO_ID = 'nexus' // Custom ID used only in Jenkins
-    MAVEN_REPO_URL = 'http://nexus:8081/repository/my-maven-hosted/'
-  }
+    }
 
   tools {
     maven 'maven'
@@ -41,7 +39,7 @@ pipeline {
 
     stage('Deploy to Nexus') {
       steps {
-        nexusArtifactUploader artifacts: [[artifactId: 'maven-jar-sample', classifier: '', file: 'target/maven-jar-sample-1.0-SNAPSHOT.jar', type: '.jar']], credentialsId: 'nexus', groupId: 'com.yhayashi30.sample', nexusUrl: 'nexus:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'my-maven-hosted', version: '1.0-SNAPSHOT' }
+        nexusArtifactUploader artifacts: [[artifactId: 'maven-jar-sample', classifier: '', file: 'target/maven-jar-sample-1.0-SNAPSHOT.jar', type: '.jar']], credentialsId: 'nexus', groupId: 'com.yhayashi30.sample', nexusUrl: 'localhost:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'my-maven-hosted', version: '1.0-SNAPSHOT' }
       }
     }
 
