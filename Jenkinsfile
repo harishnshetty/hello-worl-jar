@@ -5,7 +5,7 @@ pipeline {
     GIT_REPO = 'https://github.com/harishnshetty/hello-worl-jar.git'
     GIT_BRANCH = 'main'
     MAVEN_REPO_ID = 'nexus' // Custom ID used only in Jenkins
-    MAVEN_REPO_URL = 'http://localhost:8081/repository/my-maven-hosted/'
+    MAVEN_REPO_URL = 'http://nexus:8081/repository/my-maven-hosted/'
   }
 
   tools {
