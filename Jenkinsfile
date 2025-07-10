@@ -40,17 +40,32 @@ pipeline {
     }
 
     stage('Deploy to Nexus') {
-      steps {
-        withCredentials([usernamePassword(credentialsId: "${env.MAVEN_REPO_ID}", usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
-          sh """
-            mvn deploy -DskipTests \
-              -DaltDeploymentRepository=${env.MAVEN_REPO_ID}::default::${env.MAVEN_REPO_URL} \
-              -Dusername=$NEXUS_USER -Dpassword=$NEXUS_PASS
-          """
-        }
-      }
+  steps {
+    withCredentials([usernamePassword(credentialsId: "${env.MAVEN_REPO_ID}", usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+      writeFile file: 'settings.xml', text: """
+        <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
+          <servers>
+            <server>
+              <id>${env.MAVEN_REPO_ID}</id>
+              <username>${NEXUS_USER}</username>
+              <password>${NEXUS_PASS}</password>
+            </server>
+          </servers>
+        </settings>
+      """
+
+      sh """
+        mvn deploy -DskipTests \
+          -DaltDeploymentRepository=${env.MAVEN_REPO_ID}::default::${env.MAVEN_REPO_URL} \
+          --settings settings.xml
+      """
     }
   }
+}
+
 
   post {
     success {
