@@ -40,31 +40,10 @@ pipeline {
     }
 
     stage('Deploy to Nexus') {
-  steps {
-    withCredentials([usernamePassword(credentialsId: "${env.MAVEN_REPO_ID}", usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
-      writeFile file: 'settings.xml', text: """
-        <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
-                                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
-          <servers>
-            <server>
-              <id>${env.MAVEN_REPO_ID}</id>
-              <username>${NEXUS_USER}</username>
-              <password>${NEXUS_PASS}</password>
-            </server>
-          </servers>
-        </settings>
-      """
-
-      sh """
-        mvn deploy -DskipTests \
-          -DaltDeploymentRepository=${env.MAVEN_REPO_ID}::default::${env.MAVEN_REPO_URL} \
-          --settings settings.xml
-      """
-    }
-  }
-}
+      steps {
+        nexusArtifactUploader artifacts: [[artifactId: 'hello-world', classifier: '', file: 'target/maven-jar-sample-1.0-SNAPSHOT.jar', type: '.jar']], credentialsId: 'nexus', groupId: 'junit', nexusUrl: 'localhost:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'my-maven-hosted', version: '4.11'    }
+      }
+    }    
 
 
   post {
