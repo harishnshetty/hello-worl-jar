@@ -2,6 +2,7 @@ pipeline {
     agent any
 
     environment {
+        SCANNER_HOME = tool 'sonar-scanner'
         GIT_REPO = 'https://github.com/harishnshetty/hello-worl-jar.git'
         GIT_BRANCH = 'main'
     }
@@ -15,6 +16,26 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 git url: "${env.GIT_REPO}", branch: "${env.GIT_BRANCH}"
+            }
+        }
+
+        stage('Compile') {
+            steps {
+                sh "mvn compile"
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh "mvn test"
+            }
+        }
+
+        stage('Sonar Analysis') {
+            steps {
+                withSonarQubeEnv('sonar-server') {
+                    sh "$SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Harish -Dsonar.projectKey=KastroKey -Dsonar.java.binaries=target"
+                }
             }
         }
 
